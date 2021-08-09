@@ -50,9 +50,9 @@ std::vector<std::string> read_include(std::string path)
             s.erase(remove(s.begin(), s.end(), '\"'), s.end());
             s.erase(remove(s.begin(), s.end(), '\"'), s.end());
             s.erase(remove(s.begin(), s.end(), ' '), s.end());
-            s.erase(0, 8);
             s.erase(remove(s.begin(), s.end(), '<'), s.end());
             s.erase(remove(s.begin(), s.end(), '>'), s.end());
+            s.erase(0, 8);
             res.push_back(s);
         }
     }
@@ -66,7 +66,7 @@ auto list_file(std::string path)
     for (const auto &entry : directory_iterator(path))
     {
         std::string s = entry.path().filename().u8string();
-        if (std::regex_match(s, valid_filename))
+        if (std::regex_match(s, valid_filename)&&s!="project.cpp")
         {
             res.push_back(s);
         }
@@ -123,18 +123,24 @@ void generate_image(std::shared_ptr<node> root)
     }
     outfile << "}" << std::endl;
     outfile.close();
-    exec("dot -Tsvg write.dot -o output.svg");
+
 }
 int main(int argc, char *argv[])
 {
     if (argc == 1)
     {
-        std::cerr << "fatal error: can't find the input files" << std::endl;
+        //std::cerr << "fatal error: can't find the input files" << std::endl;
+        auto vec=list_file("./");
+        for(auto c:vec){
+            tree_create(std::string("./")+c);
+        }
+        exec("dot -Tsvg write.dot -o output.svg");
     }
     else if (argc == 2)
     {
         std::shared_ptr<node> root = tree_create(argv[1]);
         generate_image(root);
+        exec("dot -Tsvg write.dot -o output.svg");
     }
     else if (argc==3){
         std::shared_ptr<node> root = tree_create(argv[1]);

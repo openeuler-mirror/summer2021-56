@@ -16,7 +16,7 @@ This tool is used to delete the superfluous header files in the linux kernel.The
 #### 安装教程
 
 1.  git clone https://gitee.com/openeuler-competition/summer2021-56.git
-2.  compile the project.cpp code with the command: g++ project.cpp -std=c++17 -o project -g -O2 -fopenmp
+2.  compile the project.cpp code with the command: g++ project.cpp -std=c++17 -o project -O2 -fopenmp
 
 #### 使用说明
 
@@ -26,6 +26,14 @@ there are three mode for running this tool
 3.  input two path.One is the path to the source file,the other is the one you want to check whether it has been included by the first file.For example,./project a.cpp b.hpp will check whether a.cpp has included b.hpp directly or indirectly
 4.  input a path to the source file and the tool will tell you whether there is a superfluous header file can be deleted(to do)
 5.  input a path to the source file and the tool will return all the functions and macros that it has used(to do)
+
+#### test
+
+1. cd sample
+2. compile the code with g++ project.cpp -std=c++17 -o project -O2 -fopenmp
+3. if you want to draw the DAG of the whole directory use ./test
+4. if you want to draw a including tree of a specific file A  use ./test A
+5. if you want to determine whether A includes B use ./test A B
 
 #### 参与贡献
 

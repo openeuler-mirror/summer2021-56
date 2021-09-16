@@ -25,6 +25,7 @@ typedef struct tree_node
 int count_runtimes = 0;
 std::map<std::string, std::shared_ptr<node>> file_map;
 std::set<std::string> write_set;
+std::map<std::string,std::vector<std::string>> typemap;
 using namespace std::filesystem;
 std::string c_header[] = {
 	"assert.h", "limits.h", "signal.h", "stdlib.h",
@@ -115,7 +116,8 @@ std::vector<std::string> identifier{"#define",
 									"long",
 									"long*",
 									"enum",
-									"union"};
+									"union",
+									"void*"};
 std::string modifier[] = {"static", "inline", "const", "extern",
 						  "register", "volatile", "unsigned"};
 bool check(std::set<std::string> v1, std::set<std::string> v2)
@@ -152,10 +154,12 @@ std::set<std::string> read_function_declare(std::string path)
 	if (!in.is_open())
 	{
 		std::cerr << "can't open the file : " << path << std::endl;
-		res.emplace("wrong");
 		return res;
 	}
 	cnt = 0;
+	bool have_mod;
+reread:
+	have_mod = false;
 	while (std::getline(in, s))
 	{
 		if (s.substr(0, 2).compare("//") == 0 ||
@@ -178,6 +182,7 @@ std::set<std::string> read_function_declare(std::string path)
 			if (s.substr(0, c.size()).compare(c.c_str()) == 0)
 			{
 				s.erase(0, c.size() + 1);
+				have_mod = true;
 			}
 		}
 		for (auto c : identifier)
@@ -188,20 +193,41 @@ std::set<std::string> read_function_declare(std::string path)
 				{
 					if (s[i] == '(' || s[i] == ' ' ||
 						s[i] == '\t' || s[i] == '\n' ||
-						s[i] == '{')
+						s[i] == '{' || s[i] == '[')
 					{
 						res.emplace(s.substr(
 							c.size() + 1,
 							i - c.size() - 1));
-						break;
+						goto reread;
 					}
 				}
 			}
 		}
-		while (cnt-- > 0)
+		if (have_mod)
 		{
-			identifier.pop_back();
+			int i;
+			for (i = 0; i < s.size(); i++)
+			{
+				if (s[i] == ' ' || s[i] == '\t')
+				{
+					identifier.push_back(s.substr(0, i + 1));
+					cnt++;
+				}
+			}
+			for (int j = i + 1; j < s.size(); j++)
+			{
+				if (s[j] == '(' || s[j] == ' ' ||
+					s[j] == '\t' || s[j] == '\n' ||
+					s[j] == '{' || s[j] == '[')
+				{
+					res.emplace(i + 1, j - i);
+				}
+			}
 		}
+	}
+	while (cnt-- > 0)
+	{
+		identifier.pop_back();
 	}
 	return res;
 }
@@ -308,6 +334,7 @@ void list_file(std::string path, std::vector<std::string> &res)
 		}
 	}
 }
+
 std::shared_ptr<node> tree_create(std::string path,
 								  std::shared_ptr<node> parent = nullptr)
 {
@@ -517,7 +544,29 @@ int main(int argc, char *argv[])
 		exec("rm write.dot");
 		return 0;
 	}
-	std::string path(argv[2 + 2 * include]);
+	if (argc == 3 && strcmp(argv[1], "-p") == 0)
+	{
+		auto path = std::string(argv[2]);
+		if (path.substr(path.size() - 2, 2).compare(".c") == 0)
+		{
+			print(read_function_used(path));
+		}
+		else if (path.substr(path.size() - 2, 2).compare(".h") == 0)
+		{
+			print(read_function_declare(path));
+		}
+		else
+		{
+			std::cerr << "the input file is neither a source file nor a header file" << std::endl;
+		}
+		return 0;
+	}
+	int have_arg = 0;
+	if (strcmp(argv[1 + 2 * include], "-move") == 0 || strcmp(argv[1 + 2 * include], "-mover") == 0)
+	{
+		have_arg++;
+	}
+	std::string path(argv[1 + have_arg + 2 * include]);
 	auto index = path.rfind("/");
 	if (index == std::string::npos)
 	{
@@ -621,7 +670,7 @@ int main(int argc, char *argv[])
 			<< "input -move and two path to the file and it will check whether the second file can be \nremoved from the first one"
 			<< std::endl;
 		std::cout
-			<< "input -move ,-r and two path to the file and it will function recursively to check \nwhether the second file can be removed from the first one"
+			<< "input -mover and two path to the file and it will function recursively to check \nwhether the second file can be removed from the first one"
 			<< std::endl;
 		std::cout
 			<< "input -i and the include path then the program will use the path you have specified, otherwise the program will use the default path" << std::endl;

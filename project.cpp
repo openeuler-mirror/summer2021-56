@@ -12,6 +12,7 @@
 #include <set>
 #include <sys/resource.h>
 #include <omp.h>
+#include <stack>
 #define ARCH x86
 #define STR1(x) #x
 #define STR(x) STR1(x)
@@ -25,7 +26,6 @@ typedef struct tree_node
 int count_runtimes = 0;
 std::map<std::string, std::shared_ptr<node>> file_map;
 std::set<std::string> write_set;
-std::map<std::string,std::vector<std::string>> typemap;
 using namespace std::filesystem;
 std::string c_header[] = {
 	"assert.h", "limits.h", "signal.h", "stdlib.h",
@@ -70,6 +70,16 @@ std::string linux_path[6];
 // 			     std::string("/include/"));
 // }
 int PATH_SIZE = 6;
+void trim_begin(std::string &s)
+{
+	if (s.empty())
+	{
+		return;
+	}
+	s.erase(0, s.find_first_not_of(" "));
+	s.erase(0, s.find_first_not_of("\t"));
+}
+
 void split(const std::string &s, std::vector<std::string> &tokens,
 		   const std::string &delimiters = " ")
 {
@@ -141,7 +151,7 @@ std::set<std::string> read_function_declare(std::string path)
 		return res;
 	if (path.substr(path.size() - 2, 2).compare(".h") != 0)
 	{
-		std::cerr << "input file isn't a header file" << std::endl;
+		std::cerr << "input file " << path << " isn't a header file" << std::endl;
 		return res;
 	}
 	std::ifstream in(path);
@@ -158,6 +168,7 @@ std::set<std::string> read_function_declare(std::string path)
 	}
 	cnt = 0;
 	bool have_mod;
+	int bracket_cnt = 0;
 reread:
 	have_mod = false;
 	while (std::getline(in, s))
@@ -168,6 +179,13 @@ reread:
 		{
 			continue;
 		}
+		if (bracket_cnt > 0)
+		{
+			bracket_cnt += (std::count(s.begin(), s.end(), '{') - std::count(s.begin(), s.end(), '}'));
+			continue;
+		}
+		bracket_cnt += (std::count(s.begin(), s.end(), '{') - std::count(s.begin(), s.end(), '}'));
+		trim_begin(s);
 		if (s.substr(0, 7).compare("typedef") == 0)
 		{
 			std::vector<std::string> sp;
@@ -185,6 +203,34 @@ reread:
 				have_mod = true;
 			}
 		}
+		auto first_paren = s.find_first_of("(");
+		auto first_square = s.find_first_of("[");
+		if (first_paren != std::string::npos)
+		{
+			auto index = s.find_first_of(' ');
+			if (index == std::string::npos)
+			{
+				res.emplace(s.substr(0, first_paren));
+			}
+			else
+			{
+				res.emplace(s.substr(index + 1, first_paren - index - 1));
+			}
+			continue;
+		}
+		if (first_square != std::string::npos)
+		{
+			auto index = s.find_first_of(' ');
+			if (index == std::string::npos)
+			{
+				res.emplace(s.substr(0, first_paren));
+			}
+			else
+			{
+				res.emplace(s.substr(index + 1, first_paren - index - 1));
+			}
+			continue;
+		}
 		for (auto c : identifier)
 		{
 			if (s.substr(0, c.size()).compare(c.c_str()) == 0)
@@ -199,6 +245,10 @@ reread:
 							c.size() + 1,
 							i - c.size() - 1));
 						goto reread;
+					}
+					if (i == s.size() - 1)
+					{
+						res.emplace(s.substr(c.size() + 1, i - c.size()));
 					}
 				}
 			}
@@ -241,7 +291,7 @@ std::set<std::string> read_function_used(std::string path)
 		return res;
 	if (path.substr(path.size() - 2, 2).compare(".c") != 0)
 	{
-		std::cerr << "input file isn't a source file" << std::endl;
+		std::cerr << "input file " << path << " isn't a source file" << std::endl;
 		return res;
 	}
 	std::ifstream in(path);
@@ -258,14 +308,27 @@ std::set<std::string> read_function_used(std::string path)
 	}
 	std::regex call("[a-zA-Z_]+\\(.*\\)");
 	std::regex call_search("[a-zA-Z_]+\\(");
+	std::regex macro("[A-Z_]{5,}");
 	std::smatch result;
 	while (std::getline(in, s))
 	{
+		if (s.substr(0, 2).compare("//") == 0 ||
+			s.substr(0, 2).compare("/*") == 0 ||
+			s.substr(0, 2).compare(" *") == 0)
+		{
+			continue;
+		}
 		if (std::regex_search(s, call))
 		{
 			std::regex_search(s, result, call_search);
 			auto str = result[0].str();
 			str.pop_back();
+			res.emplace(str);
+			continue;
+		}
+		if (std::regex_search(s, result, macro))
+		{
+			auto str = result[0].str();
 			res.emplace(str);
 		}
 	}
@@ -507,17 +570,33 @@ int main(int argc, char *argv[])
 	}
 	linux_path[sizeof(linux_path) / sizeof(linux_path[0]) - 1] = "";
 	int include = 0;
+	int change_output = false;
+	std::ofstream of;
 	for (int i = 1; i < argc; i++)
 	{
-		if (!strcmp(argv[i], "-i"))
+		if (!strcmp(argv[i], "-il"))
 		{
 			argc -= 2;
 			linux_path[0] = std::string(argv[i + 1]) + std::string("include/");
 			linux_path[1] = std::string(argv[i + 1]) + std::string("arch/") + std::string(STR(ARCH)) + std::string("/include/");
 			linux_path[2] = std::string(argv[i + 1]) + std::string("include/uapi/");
 			linux_path[3] = std::string(argv[i + 1]) + std::string("arch/") + std::string(STR(ARCH)) + std::string("/include/uapi/");
-			include = 1;
-			break;
+			include += 1;
+		}
+		else if (!strcmp(argv[i], "-i"))
+		{
+			argc -= 2;
+			linux_path[0] = std::string(argv[i + 1]);
+			PATH_SIZE = 1;
+			include += 1;
+		}
+		if (!strcmp(argv[i], "-o"))
+		{
+			argc -= 2;
+			of.open(std::string(argv[i + 1]));
+			std::cout.rdbuf(of.rdbuf());
+			change_output = true;
+			include += 1;
 		}
 	}
 	if (!include)
@@ -675,6 +754,10 @@ int main(int argc, char *argv[])
 		std::cout
 			<< "input -i and the include path then the program will use the path you have specified, otherwise the program will use the default path" << std::endl;
 	}
-
+	if (change_output)
+	{
+		of.flush();
+		of.close();
+	}
 	return 0;
 }

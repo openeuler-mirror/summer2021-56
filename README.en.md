@@ -14,24 +14,40 @@ This tool is used to delete the superfluous header files in the linux kernel.The
 #### Installation
 
 1.  git clone https://gitee.com/openeuler-competition/summer2021-56.git
-2.  compile the project.cpp code with the command: g++ project.cpp -std=c++17 -o project -O2 -fopenmp
+2.  if you want to draw the dependcy graph, install graphiz
+- on ubuntu/Debian, use sudo apt install graphviz
+- on Fedora project use sudo yum install graphviz
+3.  compile the project.cpp code with the command: g++ project.cpp -std=c++17 -o project -O2 -fopenmp
 
 #### Instructions
 
-there are three mode for running this tool
+there are several modes for running this tool
 1.  input a path to the source file that you want to analyze,than the tool will draw the include dependency graph for you
-2.  input nothing,then the tool will draw the DAG which indicates all the include relationship in the directory.
-3.  input two path.One is the path to the source file,the other is the one you want to check whether it has been included by the first file.For example,./project a.cpp b.hpp will check whether a.cpp has included b.hpp directly or indirectly
-4.  input a path to the source file and the tool will tell you whether there is a superfluous header file can be deleted(to do)
-5.  input a path to the source file and the tool will return all the functions and macros that it has used(to do)
+2.  input nothing, then the tool will draw the DAG which indicates all the include relationship in the directory.
+3.  input two path. One is the path to the source file,the other is the one you want to check whether it has been included by the first file.For example,./project a.c b.h will check whether a.c has included b.h directly or indirectly
+4.  input a path to the source file and the tool will tell you whether there is a superfluous header file can be deleted
+5.  input -p and a path to the source file and the tool will return all the functions and macros that it has used
+6.  input -p and a path to the header file and the tool will return all the functions and macros that it has declared
+7.  use -il to specify the path to the linux kernel, then the tool will search the header file in the kernel
+8.  use -i to specify the path to the header file, then the tool will find the header file in the path you have specified
+9.  use -o and a filename to redirect the output from terminal to the file you have specified
+10. input -move and two path to the file and it will check whether the second file can be removed from the first one
+11. input -mover and two path to the file and it will function recursively to check nwhether the second file can be removed from the first one
 
 #### test
 
 1. cd sample
 2. compile the code with g++ project.cpp -std=c++17 -o project -O2 -fopenmp
-3. if you want to draw the DAG of the whole directory use ./test
-4. if you want to draw a including tree of a specific file A  use ./test A
-5. if you want to determine whether A includes B use ./test A B
+3. check the DAG of the whole directory with ./project
+4. check the including tree of a specific file A with ./project A
+5. check whether A includes B with ./project A B
+6. check the function/macro used with ./project -p A
+
+#### autotest
+
+1. cd sample
+2. chmod +x check.sh
+3. run ./check.sh to determine whether the tool is working properly(ignore other output, such as setrlimit returned result = -1)
 
 #### Contribution
 

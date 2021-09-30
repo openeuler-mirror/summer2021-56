@@ -115,11 +115,11 @@ void print(T data)
         std::cout << c << std::endl;
     }
 }
-std::vector<std::string> identifier{"#define",
+std::vector<std::string> identifier{"#define", "# define",
                                     "int",
                                     "int *",
                                     "struct",
-                                    "struct *"
+                                    "struct *",
                                     "void",
                                     "char",
                                     "char *",
@@ -129,7 +129,7 @@ std::vector<std::string> identifier{"#define",
                                     "union",
                                     "void *"};
 std::string modifier[] = {"static", "inline", "const", "extern",
-                          "register", "volatile", "unsigned"};
+                          "register", "volatile", "unsigned", "__always_inline"};
 bool check(std::set<std::string> v1, std::set<std::string> v2)
 {
     std::vector<std::string> res;
@@ -170,29 +170,41 @@ std::set<std::string> read_function_declare(std::string path)
     bool have_mod;
     int bracket_cnt = 0;
     int para_cnt = 0;
+    std::regex valid_reg("[^A-Za-z_]");
+    bool anewline = false;
 reread:
     have_mod = false;
     while (std::getline(in, s))
     {
         if (s.substr(0, 2).compare("//") == 0 ||
             s.substr(0, 2).compare("/*") == 0 ||
-            s.substr(0, 2).compare(" *") == 0)
+            s.substr(0, 2).compare(" *") == 0 ||
+            s.empty())
         {
             continue;
         }
         if (bracket_cnt > 0)
         {
             bracket_cnt += (std::count(s.begin(), s.end(), '{') - std::count(s.begin(), s.end(), '}'));
+            para_cnt += (std::count(s.begin(), s.end(), '(') - std::count(s.begin(), s.end(), ')'));
             continue;
         }
         if (para_cnt > 0)
         {
+            bracket_cnt += (std::count(s.begin(), s.end(), '{') - std::count(s.begin(), s.end(), '}'));
             para_cnt += (std::count(s.begin(), s.end(), '(') - std::count(s.begin(), s.end(), ')'));
             continue;
         }
         bracket_cnt += (std::count(s.begin(), s.end(), '{') - std::count(s.begin(), s.end(), '}'));
         para_cnt += (std::count(s.begin(), s.end(), '(') - std::count(s.begin(), s.end(), ')'));
         trim_begin(s);
+        if (anewline)
+        {
+            auto index = std::min(s.find("("), s.find(" "));
+            res.emplace(s.substr(0, index));
+            anewline=false;
+            continue;
+        }
         if (s.substr(0, 7).compare("typedef") == 0)
         {
             std::vector<std::string> sp;
@@ -202,14 +214,62 @@ reread:
             identifier.push_back(sp[sp.size() - 1]);
             cnt++;
         }
+        if (int i = s.find("struct"), j = s.find("("); i != std::string::npos && j != std::string::npos && j > i)
+        {
+            int k = s.find(" ", i + 7);
+            auto s_to_push = s.substr(k + 1, j - k - 1);
+            if (s_to_push[0] == '*')
+                s_to_push.erase(0, 1);
+            if (s_to_push.empty() || std::regex_search(s_to_push, valid_reg))
+            {
+                goto continue_match1;
+            }
+            res.emplace(s_to_push);
+            continue;
+        }
+        else if (s.find("struct")!=std::string::npos && s[s.size() - 1] == '*')
+        {
+            anewline = true;
+            continue;
+        }
+    continue_match1:
         for (auto c : modifier)
         {
             if (s.substr(0, c.size()).compare(c.c_str()) == 0)
             {
                 s.erase(0, c.size() + 1);
                 have_mod = true;
+                c = modifier[0];
             }
         }
+        for (auto c : identifier)
+        {
+            if (s.substr(0, c.size()).compare(c.c_str()) == 0)
+            {
+                for (int i = c.size() + 1; i < s.size(); i++)
+                {
+                    if (s[i] == '(' || s[i] == ' ' ||
+                        s[i] == '\t' || s[i] == '\n' ||
+                        s[i] == '{' || s[i] == '[' || s[i] == ';')
+                    {
+                        auto s_to_push = s.substr(c.size() + 1, i - c.size() - 1);
+                        if (s_to_push[0] == '*')
+                            s_to_push.erase(0, 1);
+                        if (s_to_push.empty() || std::regex_search(s_to_push, valid_reg))
+                        {
+                            goto continue_match2;
+                        }
+                        res.emplace(s_to_push);
+                        goto reread;
+                    }
+                    if (i == s.size() - 1)
+                    {
+                        res.emplace(s.substr(c.size() + 1, i - c.size()));
+                    }
+                }
+            }
+        }
+    continue_match2:
         auto first_paren = s.find_first_of("(");
         auto first_square = s.find_first_of("[");
         if (first_paren != std::string::npos)
@@ -220,6 +280,10 @@ reread:
                 auto s_to_push = s.substr(0, first_paren);
                 if (s_to_push[0] == '*')
                     s.erase(0, 1);
+                if (s_to_push.empty() || std::regex_search(s_to_push, valid_reg))
+                {
+                    goto continue_match3;
+                }
                 res.emplace(s_to_push);
             }
             else
@@ -250,29 +314,7 @@ reread:
             }
             continue;
         }
-        for (auto c : identifier)
-        {
-            if (s.substr(0, c.size()).compare(c.c_str()) == 0)
-            {
-                for (int i = c.size() + 1; i < s.size(); i++)
-                {
-                    if (s[i] == '(' || s[i] == ' ' ||
-                        s[i] == '\t' || s[i] == '\n' ||
-                        s[i] == '{' || s[i] == '[' || s[i] == ';')
-                    {
-                        auto s_to_push = s.substr(c.size() + 1, i - c.size() - 1);
-                        if (s_to_push[0] == '*')
-                            s_to_push.erase(0, 1);
-                        res.emplace(s_to_push);
-                        goto reread;
-                    }
-                    if (i == s.size() - 1)
-                    {
-                        res.emplace(s.substr(c.size() + 1, i - c.size()));
-                    }
-                }
-            }
-        }
+    continue_match3:
         if (have_mod)
         {
             int i;
@@ -326,30 +368,53 @@ std::set<std::string> read_function_used(std::string path)
         std::cerr << "can't open the file : " << path << std::endl;
         return res;
     }
-    std::regex call("[a-zA-Z_]+\\(.*\\)");
-    std::regex call_search("[a-zA-Z_]+\\(");
+    std::regex call_search("[a-zA-Z0-9_]+\\(");
     std::regex macro("[A-Z_]{5,}");
+    std::regex struct_find("struct");
     std::smatch result;
     while (std::getline(in, s))
     {
         if (s.substr(0, 2).compare("//") == 0 ||
             s.substr(0, 2).compare("/*") == 0 ||
-            s.substr(0, 2).compare(" *") == 0)
+            s.substr(0, 2).compare(" *") == 0 || s.empty())
         {
             continue;
         }
-        if (std::regex_search(s, call))
+        trim_begin(s);
+        if (s.substr(0, 2).compare("if") == 0 || s.substr(0, 5).compare("while") == 0)
+        {
+            auto index = s.find("(");
+            s.erase(0, index + 1);
+        }
+        if (std::regex_search(s, call_search))
         {
             std::regex_search(s, result, call_search);
             auto str = result[0].str();
             str.pop_back();
-            res.emplace(str);
+            if (!str.empty() && str.find("sizeof") == std::string::npos)
+                res.emplace(str);
             continue;
         }
         if (std::regex_search(s, result, macro))
         {
             auto str = result[0].str();
-            res.emplace(str);
+            if (!str.empty())
+                res.emplace(str);
+        }
+        if (std::regex_search(s, struct_find))
+        {
+            auto index = s.find("struct");
+            for (int i = 0; i < index + 7; i++)
+            {
+                if (s[i] == '(' || s[i] == ' ' ||
+                    s[i] == '\t' || s[i] == '\n' ||
+                    s[i] == '{' || s[i] == '[' || s[i] == '*')
+                {
+                    if (index + 7 < s.length())
+                        res.emplace(s.substr(index + 7, i));
+                    break;
+                }
+            }
         }
     }
     return res;
@@ -690,7 +755,7 @@ int main(int argc, char *argv[])
         {
             if (c.second.empty())
             {
-                std::cout << c.first.second << " can be removed from" << c.first.first << std::endl;
+                std::cout << c.first.second << " " << c.first.first << std::endl;
             }
             else
             {

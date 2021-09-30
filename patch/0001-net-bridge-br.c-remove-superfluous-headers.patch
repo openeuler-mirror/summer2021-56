@@ -1,0 +1,31 @@
+From 7d2135f7329cf43d9b113e2c1cb4ca81d78a9351 Mon Sep 17 00:00:00 2001
+From: Mianhan Liu <liumh1@shanghaitech.edu.cn>
+Date: Thu, 30 Sep 2021 23:12:18 +0800
+Subject: [PATCH] net/bridge/br.c: remove superfluous headers
+
+br.c hasn't use any macro or function declared in linux/etherdevice.h,
+linux/llc.h and net/llc.h.
+Thus, these files can be removed from br.c safely without
+affecting the compilation of the ./net module
+---
+ net/bridge/br.c | 3 ---
+ 1 file changed, 3 deletions(-)
+
+diff --git a/net/bridge/br.c b/net/bridge/br.c
+index d3a32c681..a79f42117 100644
+--- a/net/bridge/br.c
++++ b/net/bridge/br.c
+@@ -10,10 +10,7 @@
+ #include <linux/module.h>
+ #include <linux/kernel.h>
+ #include <linux/netdevice.h>
+-#include <linux/etherdevice.h>
+ #include <linux/init.h>
+-#include <linux/llc.h>
+-#include <net/llc.h>
+ #include <net/stp.h>
+ #include <net/switchdev.h>
+ 
+-- 
+2.25.1
+

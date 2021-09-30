@@ -1,0 +1,30 @@
+From 709405ab2f1186ebc737d0f4f58abaab6808cb7c Mon Sep 17 00:00:00 2001
+From: Mianhan Liu <liumh1@shanghaitech.edu.cn>
+Date: Thu, 30 Sep 2021 23:20:19 +0800
+Subject: [PATCH] net/bridge/br_stp_if.c: remove superfluous headers
+
+br_stp_if.c hasn't use any macro or function declared in linux/kmod.h and net/switchdev.h.
+Thus, these files can be removed from br_stp_if.c safely without
+affecting the compilation of the ./net module
+---
+ net/bridge/br_stp_if.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/net/bridge/br_stp_if.c b/net/bridge/br_stp_if.c
+index ba55851fe..625638d19 100644
+--- a/net/bridge/br_stp_if.c
++++ b/net/bridge/br_stp_if.c
+@@ -8,10 +8,8 @@
+  */
+ 
+ #include <linux/kernel.h>
+-#include <linux/kmod.h>
+ #include <linux/etherdevice.h>
+ #include <linux/rtnetlink.h>
+-#include <net/switchdev.h>
+ 
+ #include "br_private.h"
+ #include "br_private_stp.h"
+-- 
+2.25.1
+

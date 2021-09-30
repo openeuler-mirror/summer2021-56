@@ -1,0 +1,35 @@
+From 78484e2c47ea8016484575a479ac0d6af4fc0b9a Mon Sep 17 00:00:00 2001
+From: Mianhan Liu <liumh1@shanghaitech.edu.cn>
+Date: Thu, 30 Sep 2021 22:46:24 +0800
+Subject: [PATCH] net/6lowpan/iphc.c: remove superfluous headers
+
+iphc.c hasn't use any macro or function declared in 6lowpan_i.h, linux/bitops.h,
+linux/if_arp.h and linux/netdevice.h.
+Thus, these files can be removed from iphc.c safely without
+affecting the compilation of the ./net module
+---
+ net/6lowpan/iphc.c | 4 ----
+ 1 file changed, 4 deletions(-)
+
+diff --git a/net/6lowpan/iphc.c b/net/6lowpan/iphc.c
+index 52fad5dad..8fe872df8 100644
+--- a/net/6lowpan/iphc.c
++++ b/net/6lowpan/iphc.c
+@@ -46,14 +46,10 @@
+  * SUCH DAMAGE.
+  */
+ 
+-#include <linux/bitops.h>
+-#include <linux/if_arp.h>
+-#include <linux/netdevice.h>
+ 
+ #include <net/6lowpan.h>
+ #include <net/ipv6.h>
+ 
+-#include "6lowpan_i.h"
+ #include "nhc.h"
+ 
+ /* Values of fields within the IPHC encoding first byte */
+-- 
+2.25.1
+

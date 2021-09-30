@@ -1,0 +1,27 @@
+From fb57951e8f976b865cba7c787ed3492d3574ea70 Mon Sep 17 00:00:00 2001
+From: Mianhan Liu <liumh1@shanghaitech.edu.cn>
+Date: Thu, 30 Sep 2021 22:47:14 +0800
+Subject: [PATCH] net/6lowpan/ndisc.c: remove superfluous headers
+
+ndisc.c hasn't use any macro or function declared in net/6lowpan.h.
+Thus, these files can be removed from ndisc.c safely without
+affecting the compilation of the ./net module
+---
+ net/6lowpan/ndisc.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/net/6lowpan/ndisc.c b/net/6lowpan/ndisc.c
+index 16be8f8b2..6f8853e41 100644
+--- a/net/6lowpan/ndisc.c
++++ b/net/6lowpan/ndisc.c
+@@ -5,7 +5,6 @@
+  * (C) 2016 Pengutronix, Alexander Aring <aar@pengutronix.de>
+  */
+ 
+-#include <net/6lowpan.h>
+ #include <net/addrconf.h>
+ #include <net/ndisc.h>
+ 
+-- 
+2.25.1
+

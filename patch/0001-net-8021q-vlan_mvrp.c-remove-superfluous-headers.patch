@@ -1,0 +1,27 @@
+From 8768dc57a94650650566495799bc381abaceb995 Mon Sep 17 00:00:00 2001
+From: Mianhan Liu <liumh1@shanghaitech.edu.cn>
+Date: Thu, 30 Sep 2021 22:52:59 +0800
+Subject: [PATCH] net/8021q/vlan_mvrp.c: remove superfluous headers
+
+vlan_mvrp.c hasn't use any macro or function declared in linux/if_ether.h.
+Thus, these files can be removed from vlan_mvrp.c safely without
+affecting the compilation of the ./net module
+---
+ net/8021q/vlan_mvrp.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/net/8021q/vlan_mvrp.c b/net/8021q/vlan_mvrp.c
+index 689eceeaa..29a832069 100644
+--- a/net/8021q/vlan_mvrp.c
++++ b/net/8021q/vlan_mvrp.c
+@@ -8,7 +8,6 @@
+  *	Copyright (c) 2008 Patrick McHardy <kaber@trash.net>
+  */
+ #include <linux/types.h>
+-#include <linux/if_ether.h>
+ #include <linux/if_vlan.h>
+ #include <net/mrp.h>
+ #include "vlan.h"
+-- 
+2.25.1
+

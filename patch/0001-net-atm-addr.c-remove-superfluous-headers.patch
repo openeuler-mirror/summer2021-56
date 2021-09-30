@@ -1,0 +1,30 @@
+From eefe03f50388d9b5d1c907aa191d59a08d7ddd73 Mon Sep 17 00:00:00 2001
+From: Mianhan Liu <liumh1@shanghaitech.edu.cn>
+Date: Thu, 30 Sep 2021 23:00:35 +0800
+Subject: [PATCH] net/atm/addr.c: remove superfluous headers
+
+addr.c hasn't use any macro or function declared in linux/atm.h, linux/atmdev.h and linux/uaccess.h.
+Thus, these files can be removed from addr.c safely without
+affecting the compilation of the ./net module
+---
+ net/atm/addr.c | 3 ---
+ 1 file changed, 3 deletions(-)
+
+diff --git a/net/atm/addr.c b/net/atm/addr.c
+index 0530b63f5..30e5aa997 100644
+--- a/net/atm/addr.c
++++ b/net/atm/addr.c
+@@ -3,10 +3,7 @@
+ 
+ /* Written 1995-2000 by Werner Almesberger, EPFL LRC/ICA */
+ 
+-#include <linux/atm.h>
+-#include <linux/atmdev.h>
+ #include <linux/slab.h>
+-#include <linux/uaccess.h>
+ 
+ #include "signaling.h"
+ #include "addr.h"
+-- 
+2.25.1
+

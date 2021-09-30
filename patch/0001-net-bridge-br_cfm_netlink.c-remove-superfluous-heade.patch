@@ -1,0 +1,26 @@
+From 1bdb66f0a62a4ee1baa4d9ae42ea4cb8071dc777 Mon Sep 17 00:00:00 2001
+From: Mianhan Liu <liumh1@shanghaitech.edu.cn>
+Date: Thu, 30 Sep 2021 23:13:58 +0800
+Subject: [PATCH] net/bridge/br_cfm_netlink.c: remove superfluous headers
+
+br_cfm_netlink.c hasn't use any macro or function declared in net/genetlink.h.
+Thus, these files can be removed from br_cfm_netlink.c safely without
+affecting the compilation of the ./net module
+---
+ net/bridge/br_cfm_netlink.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/net/bridge/br_cfm_netlink.c b/net/bridge/br_cfm_netlink.c
+index 5c4c369f8..7db30984b 100644
+--- a/net/bridge/br_cfm_netlink.c
++++ b/net/bridge/br_cfm_netlink.c
+@@ -1,6 +1,5 @@
+ // SPDX-License-Identifier: GPL-2.0-or-later
+ 
+-#include <net/genetlink.h>
+ 
+ #include "br_private.h"
+ #include "br_private_cfm.h"
+-- 
+2.25.1
+

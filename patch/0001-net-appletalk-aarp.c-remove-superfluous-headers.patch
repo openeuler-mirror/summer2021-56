@@ -1,0 +1,33 @@
+From 5368a50b444c4a16c326d47c6c8277deb8ca071c Mon Sep 17 00:00:00 2001
+From: Mianhan Liu <liumh1@shanghaitech.edu.cn>
+Date: Thu, 30 Sep 2021 22:57:07 +0800
+Subject: [PATCH] net/appletalk/aarp.c: remove superfluous headers
+
+aarp.c hasn't use any macro or function declared in linux/proc_fs.h and net/sock.h.
+Thus, these files can be removed from aarp.c safely without
+affecting the compilation of the ./net module
+---
+ net/appletalk/aarp.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/net/appletalk/aarp.c b/net/appletalk/aarp.c
+index c7236daa2..01f4d71e4 100644
+--- a/net/appletalk/aarp.c
++++ b/net/appletalk/aarp.c
+@@ -25,13 +25,11 @@
+ 
+ #include <linux/if_arp.h>
+ #include <linux/slab.h>
+-#include <net/sock.h>
+ #include <net/datalink.h>
+ #include <net/psnap.h>
+ #include <linux/atalk.h>
+ #include <linux/delay.h>
+ #include <linux/init.h>
+-#include <linux/proc_fs.h>
+ #include <linux/seq_file.h>
+ #include <linux/export.h>
+ #include <linux/etherdevice.h>
+-- 
+2.25.1
+

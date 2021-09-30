@@ -1,0 +1,40 @@
+From 27dd5f948c174eb6c2fd6ffa3883f60f46ec6267 Mon Sep 17 00:00:00 2001
+From: Mianhan Liu <liumh1@shanghaitech.edu.cn>
+Date: Thu, 30 Sep 2021 23:17:09 +0800
+Subject: [PATCH] net/bridge/br_input.c: remove superfluous headers
+
+br_input.c hasn't use any macro or function declared in linux/neighbour.h,
+linux/rculist.h, linux/slab.h and net/arp.h.
+Thus, these files can be removed from br_input.c safely without
+affecting the compilation of the ./net module
+---
+ net/bridge/br_input.c | 4 ----
+ 1 file changed, 4 deletions(-)
+
+diff --git a/net/bridge/br_input.c b/net/bridge/br_input.c
+index b50382f95..7a23dce81 100644
+--- a/net/bridge/br_input.c
++++ b/net/bridge/br_input.c
+@@ -7,7 +7,6 @@
+  *	Lennert Buytenhek		<buytenh@gnu.org>
+  */
+ 
+-#include <linux/slab.h>
+ #include <linux/kernel.h>
+ #include <linux/netdevice.h>
+ #include <linux/etherdevice.h>
+@@ -15,11 +14,8 @@
+ #ifdef CONFIG_NETFILTER_FAMILY_BRIDGE
+ #include <net/netfilter/nf_queue.h>
+ #endif
+-#include <linux/neighbour.h>
+-#include <net/arp.h>
+ #include <net/dsa.h>
+ #include <linux/export.h>
+-#include <linux/rculist.h>
+ #include "br_private.h"
+ #include "br_private_tunnel.h"
+ 
+-- 
+2.25.1
+

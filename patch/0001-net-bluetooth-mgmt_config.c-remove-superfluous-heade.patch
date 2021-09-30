@@ -1,0 +1,27 @@
+From ab5dae8b9daf5877e30d5be98ee696787a646059 Mon Sep 17 00:00:00 2001
+From: Mianhan Liu <liumh1@shanghaitech.edu.cn>
+Date: Thu, 30 Sep 2021 23:09:44 +0800
+Subject: [PATCH] net/bluetooth/mgmt_config.c: remove superfluous headers
+
+mgmt_config.c hasn't use any macro or function declared in mgmt_config.h.
+Thus, these files can be removed from mgmt_config.c safely without
+affecting the compilation of the ./net module
+---
+ net/bluetooth/mgmt_config.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/net/bluetooth/mgmt_config.c b/net/bluetooth/mgmt_config.c
+index 6ef701c27..8505b4358 100644
+--- a/net/bluetooth/mgmt_config.c
++++ b/net/bluetooth/mgmt_config.c
+@@ -9,7 +9,6 @@
+ #include <net/bluetooth/mgmt.h>
+ 
+ #include "mgmt_util.h"
+-#include "mgmt_config.h"
+ 
+ #define HDEV_PARAM_U16(_param_name_) \
+ 	struct {\
+-- 
+2.25.1
+

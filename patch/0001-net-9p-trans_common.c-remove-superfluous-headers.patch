@@ -1,0 +1,27 @@
+From 80111ccd4385f46c03726538b4d67f8aeba865eb Mon Sep 17 00:00:00 2001
+From: Mianhan Liu <liumh1@shanghaitech.edu.cn>
+Date: Thu, 30 Sep 2021 22:55:26 +0800
+Subject: [PATCH] net/9p/trans_common.c: remove superfluous headers
+
+trans_common.c hasn't use any macro or function declared in trans_common.h.
+Thus, these files can be removed from trans_common.c safely without
+affecting the compilation of the ./net module
+---
+ net/9p/trans_common.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/net/9p/trans_common.c b/net/9p/trans_common.c
+index 6ea5ea548..9ce89f25f 100644
+--- a/net/9p/trans_common.c
++++ b/net/9p/trans_common.c
+@@ -14,7 +14,6 @@
+ 
+ #include <linux/mm.h>
+ #include <linux/module.h>
+-#include "trans_common.h"
+ 
+ /**
+  * p9_release_pages - Release pages after the transaction.
+-- 
+2.25.1
+

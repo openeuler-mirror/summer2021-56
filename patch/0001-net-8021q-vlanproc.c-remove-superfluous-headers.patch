@@ -1,0 +1,28 @@
+From ffd1ce18d0ba04eaa87605d07828350b62e4b1d6 Mon Sep 17 00:00:00 2001
+From: Mianhan Liu <liumh1@shanghaitech.edu.cn>
+Date: Thu, 30 Sep 2021 22:54:29 +0800
+Subject: [PATCH] net/8021q/vlanproc.c: remove superfluous headers
+
+vlanproc.c hasn't use any macro or function declared in linux/fs.h and linux/netdevice.h.
+Thus, these files can be removed from vlanproc.c safely without
+affecting the compilation of the ./net module
+---
+ net/8021q/vlanproc.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/net/8021q/vlanproc.c b/net/8021q/vlanproc.c
+index ec87dea23..6244d6fdc 100644
+--- a/net/8021q/vlanproc.c
++++ b/net/8021q/vlanproc.c
+@@ -22,8 +22,6 @@
+ #include <linux/string.h>
+ #include <linux/proc_fs.h>
+ #include <linux/seq_file.h>
+-#include <linux/fs.h>
+-#include <linux/netdevice.h>
+ #include <linux/if_vlan.h>
+ #include <net/net_namespace.h>
+ #include <net/netns/generic.h>
+-- 
+2.25.1
+

@@ -1,0 +1,27 @@
+From a2249a3fc2445078d1d6acbdad3e5615ce02ec15 Mon Sep 17 00:00:00 2001
+From: Mianhan Liu <liumh1@shanghaitech.edu.cn>
+Date: Thu, 30 Sep 2021 22:51:50 +0800
+Subject: [PATCH] net/802/stp.c: remove superfluous headers
+
+stp.c hasn't use any macro or function declared in linux/slab.h.
+Thus, these files can be removed from stp.c safely without
+affecting the compilation of the ./net module
+---
+ net/802/stp.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/net/802/stp.c b/net/802/stp.c
+index d550d9f88..02ec99c7a 100644
+--- a/net/802/stp.c
++++ b/net/802/stp.c
+@@ -8,7 +8,6 @@
+ #include <linux/skbuff.h>
+ #include <linux/etherdevice.h>
+ #include <linux/llc.h>
+-#include <linux/slab.h>
+ #include <linux/module.h>
+ #include <net/llc.h>
+ #include <net/llc_pdu.h>
+-- 
+2.25.1
+

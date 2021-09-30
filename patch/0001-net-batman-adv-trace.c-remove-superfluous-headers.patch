@@ -1,0 +1,24 @@
+From 9f61720355d5b735d9a0bc2badb38993cd143129 Mon Sep 17 00:00:00 2001
+From: Mianhan Liu <liumh1@shanghaitech.edu.cn>
+Date: Thu, 30 Sep 2021 23:06:04 +0800
+Subject: [PATCH] net/batman-adv/trace.c: remove superfluous headers
+
+trace.c hasn't use any macro or function declared in trace.h.
+Thus, these files can be removed from trace.c safely without
+affecting the compilation of the ./net module
+---
+ net/batman-adv/trace.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/net/batman-adv/trace.c b/net/batman-adv/trace.c
+index ec8b95190..99a1d2001 100644
+--- a/net/batman-adv/trace.c
++++ b/net/batman-adv/trace.c
+@@ -5,4 +5,3 @@
+  */
+ 
+ #define CREATE_TRACE_POINTS
+-#include "trace.h"
+-- 
+2.25.1
+

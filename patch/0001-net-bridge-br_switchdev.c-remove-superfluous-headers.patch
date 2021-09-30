@@ -1,0 +1,30 @@
+From 30d4c265d6468195d66c6fac0c741d61bc9f2145 Mon Sep 17 00:00:00 2001
+From: Mianhan Liu <liumh1@shanghaitech.edu.cn>
+Date: Thu, 30 Sep 2021 23:21:32 +0800
+Subject: [PATCH] net/bridge/br_switchdev.c: remove superfluous headers
+
+br_switchdev.c hasn't use any macro or function declared in linux/list.h,
+linux/rtnetlink.h and linux/skbuff.h.
+Thus, these files can be removed from br_switchdev.c safely without
+affecting the compilation of the ./net module
+---
+ net/bridge/br_switchdev.c | 3 ---
+ 1 file changed, 3 deletions(-)
+
+diff --git a/net/bridge/br_switchdev.c b/net/bridge/br_switchdev.c
+index 6bf518d78..23b67553a 100644
+--- a/net/bridge/br_switchdev.c
++++ b/net/bridge/br_switchdev.c
+@@ -1,9 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0
+ #include <linux/kernel.h>
+-#include <linux/list.h>
+ #include <linux/netdevice.h>
+-#include <linux/rtnetlink.h>
+-#include <linux/skbuff.h>
+ #include <net/switchdev.h>
+ 
+ #include "br_private.h"
+-- 
+2.25.1
+

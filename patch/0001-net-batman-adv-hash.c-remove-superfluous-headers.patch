@@ -1,0 +1,29 @@
+From 5d06bc5149ce96e9099a8bf47808f0760b351274 Mon Sep 17 00:00:00 2001
+From: Mianhan Liu <liumh1@shanghaitech.edu.cn>
+Date: Thu, 30 Sep 2021 23:04:51 +0800
+Subject: [PATCH] net/batman-adv/hash.c: remove superfluous headers
+
+hash.c hasn't use any macro or function declared in linux/gfp.h and main.h.
+Thus, these files can be removed from hash.c safely without
+affecting the compilation of the ./net module
+---
+ net/batman-adv/hash.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/net/batman-adv/hash.c b/net/batman-adv/hash.c
+index 8016e6197..3587ca630 100644
+--- a/net/batman-adv/hash.c
++++ b/net/batman-adv/hash.c
+@@ -5,9 +5,7 @@
+  */
+ 
+ #include "hash.h"
+-#include "main.h"
+ 
+-#include <linux/gfp.h>
+ #include <linux/lockdep.h>
+ #include <linux/slab.h>
+ 
+-- 
+2.25.1
+

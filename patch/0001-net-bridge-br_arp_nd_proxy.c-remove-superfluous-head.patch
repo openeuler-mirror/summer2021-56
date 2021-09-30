@@ -1,0 +1,29 @@
+From 3615c3cb31bdbdd198373e046c95a556344b6b37 Mon Sep 17 00:00:00 2001
+From: Mianhan Liu <liumh1@shanghaitech.edu.cn>
+Date: Thu, 30 Sep 2021 23:13:15 +0800
+Subject: [PATCH] net/bridge/br_arp_nd_proxy.c: remove superfluous headers
+
+br_arp_nd_proxy.c hasn't use any macro or function declared in net/ip6_checksum.h and net/ipv6_stubs.h.
+Thus, these files can be removed from br_arp_nd_proxy.c safely without
+affecting the compilation of the ./net module
+---
+ net/bridge/br_arp_nd_proxy.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/net/bridge/br_arp_nd_proxy.c b/net/bridge/br_arp_nd_proxy.c
+index 3db1def44..39377c132 100644
+--- a/net/bridge/br_arp_nd_proxy.c
++++ b/net/bridge/br_arp_nd_proxy.c
+@@ -17,9 +17,7 @@
+ #include <linux/if_vlan.h>
+ #include <linux/inetdevice.h>
+ #include <net/addrconf.h>
+-#include <net/ipv6_stubs.h>
+ #if IS_ENABLED(CONFIG_IPV6)
+-#include <net/ip6_checksum.h>
+ #endif
+ 
+ #include "br_private.h"
+-- 
+2.25.1
+

@@ -1,0 +1,27 @@
+From ba062afabff219e2f71110bf3ed879cce51b2319 Mon Sep 17 00:00:00 2001
+From: Mianhan Liu <liumh1@shanghaitech.edu.cn>
+Date: Thu, 30 Sep 2021 22:52:41 +0800
+Subject: [PATCH] net/8021q/vlan_core.c: remove superfluous headers
+
+vlan_core.c hasn't use any macro or function declared in linux/netpoll.h.
+Thus, these files can be removed from vlan_core.c safely without
+affecting the compilation of the ./net module
+---
+ net/8021q/vlan_core.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/net/8021q/vlan_core.c b/net/8021q/vlan_core.c
+index 59bc13b5f..0266eb75c 100644
+--- a/net/8021q/vlan_core.c
++++ b/net/8021q/vlan_core.c
+@@ -2,7 +2,6 @@
+ #include <linux/skbuff.h>
+ #include <linux/netdevice.h>
+ #include <linux/if_vlan.h>
+-#include <linux/netpoll.h>
+ #include <linux/export.h>
+ #include <net/gro.h>
+ #include "vlan.h"
+-- 
+2.25.1
+

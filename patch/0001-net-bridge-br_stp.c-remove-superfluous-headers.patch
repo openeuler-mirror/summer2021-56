@@ -1,0 +1,27 @@
+From fab71b238e5aebb234bb40f2c5d9ade1a71b1d03 Mon Sep 17 00:00:00 2001
+From: Mianhan Liu <liumh1@shanghaitech.edu.cn>
+Date: Thu, 30 Sep 2021 23:19:44 +0800
+Subject: [PATCH] net/bridge/br_stp.c: remove superfluous headers
+
+br_stp.c hasn't use any macro or function declared in linux/rculist.h.
+Thus, these files can be removed from br_stp.c safely without
+affecting the compilation of the ./net module
+---
+ net/bridge/br_stp.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/net/bridge/br_stp.c b/net/bridge/br_stp.c
+index 1d80f34a1..4b9a0fbae 100644
+--- a/net/bridge/br_stp.c
++++ b/net/bridge/br_stp.c
+@@ -7,7 +7,6 @@
+  *	Lennert Buytenhek		<buytenh@gnu.org>
+  */
+ #include <linux/kernel.h>
+-#include <linux/rculist.h>
+ #include <net/switchdev.h>
+ 
+ #include "br_private.h"
+-- 
+2.25.1
+

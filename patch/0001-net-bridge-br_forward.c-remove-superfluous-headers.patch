@@ -1,0 +1,32 @@
+From aeca52c66b95bb8c2b2fd3459d0dc1a90a6a8b3b Mon Sep 17 00:00:00 2001
+From: Mianhan Liu <liumh1@shanghaitech.edu.cn>
+Date: Thu, 30 Sep 2021 23:15:55 +0800
+Subject: [PATCH] net/bridge/br_forward.c: remove superfluous headers
+
+br_forward.c hasn't use any macro or function declared in linux/err.h,
+linux/netdevice.h, linux/netpoll.h and linux/slab.h.
+Thus, these files can be removed from br_forward.c safely without
+affecting the compilation of the ./net module
+---
+ net/bridge/br_forward.c | 4 ----
+ 1 file changed, 4 deletions(-)
+
+diff --git a/net/bridge/br_forward.c b/net/bridge/br_forward.c
+index ec646656d..8d947dbf6 100644
+--- a/net/bridge/br_forward.c
++++ b/net/bridge/br_forward.c
+@@ -7,11 +7,7 @@
+  *	Lennert Buytenhek		<buytenh@gnu.org>
+  */
+ 
+-#include <linux/err.h>
+-#include <linux/slab.h>
+ #include <linux/kernel.h>
+-#include <linux/netdevice.h>
+-#include <linux/netpoll.h>
+ #include <linux/skbuff.h>
+ #include <linux/if_vlan.h>
+ #include <linux/netfilter_bridge.h>
+-- 
+2.25.1
+

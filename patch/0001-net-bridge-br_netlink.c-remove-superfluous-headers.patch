@@ -1,0 +1,37 @@
+From 14262e83d8a8b4fe86f7455f49b518b46ac67486 Mon Sep 17 00:00:00 2001
+From: Mianhan Liu <liumh1@shanghaitech.edu.cn>
+Date: Thu, 30 Sep 2021 23:18:19 +0800
+Subject: [PATCH] net/bridge/br_netlink.c: remove superfluous headers
+
+br_netlink.c hasn't use any macro or function declared in br_private_cfm.h,
+linux/slab.h and net/sock.h.
+Thus, these files can be removed from br_netlink.c safely without
+affecting the compilation of the ./net module
+---
+ net/bridge/br_netlink.c | 3 ---
+ 1 file changed, 3 deletions(-)
+
+diff --git a/net/bridge/br_netlink.c b/net/bridge/br_netlink.c
+index 6c58fc14d..500dc4671 100644
+--- a/net/bridge/br_netlink.c
++++ b/net/bridge/br_netlink.c
+@@ -7,16 +7,13 @@
+  */
+ 
+ #include <linux/kernel.h>
+-#include <linux/slab.h>
+ #include <linux/etherdevice.h>
+ #include <net/rtnetlink.h>
+ #include <net/net_namespace.h>
+-#include <net/sock.h>
+ #include <uapi/linux/if_bridge.h>
+ 
+ #include "br_private.h"
+ #include "br_private_stp.h"
+-#include "br_private_cfm.h"
+ #include "br_private_tunnel.h"
+ #include "br_private_mcast_eht.h"
+ 
+-- 
+2.25.1
+

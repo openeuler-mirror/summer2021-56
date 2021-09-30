@@ -1,0 +1,30 @@
+From cc7085d8790efa2ef783d7ddbec4e3778a75de2d Mon Sep 17 00:00:00 2001
+From: Mianhan Liu <liumh1@shanghaitech.edu.cn>
+Date: Thu, 30 Sep 2021 22:55:07 +0800
+Subject: [PATCH] net/9p/error.c: remove superfluous headers
+
+error.c hasn't use any macro or function declared in linux/list.h and net/9p/9p.h.
+Thus, these files can be removed from error.c safely without
+affecting the compilation of the ./net module
+---
+ net/9p/error.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/net/9p/error.c b/net/9p/error.c
+index 61c18daf3..a0e9be119 100644
+--- a/net/9p/error.c
++++ b/net/9p/error.c
+@@ -15,10 +15,8 @@
+ #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+ 
+ #include <linux/module.h>
+-#include <linux/list.h>
+ #include <linux/jhash.h>
+ #include <linux/errno.h>
+-#include <net/9p/9p.h>
+ 
+ /**
+  * struct errormap - map string errors from Plan 9 to Linux numeric ids
+-- 
+2.25.1
+

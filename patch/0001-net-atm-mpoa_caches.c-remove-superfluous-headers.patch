@@ -1,0 +1,27 @@
+From 53e7a365c573c6caa64967b346c23d389c4211bb Mon Sep 17 00:00:00 2001
+From: Mianhan Liu <liumh1@shanghaitech.edu.cn>
+Date: Thu, 30 Sep 2021 23:01:39 +0800
+Subject: [PATCH] net/atm/mpoa_caches.c: remove superfluous headers
+
+mpoa_caches.c hasn't use any macro or function declared in linux/time.h.
+Thus, these files can be removed from mpoa_caches.c safely without
+affecting the compilation of the ./net module
+---
+ net/atm/mpoa_caches.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/net/atm/mpoa_caches.c b/net/atm/mpoa_caches.c
+index f7a2f0e41..b86fdd51f 100644
+--- a/net/atm/mpoa_caches.c
++++ b/net/atm/mpoa_caches.c
+@@ -2,7 +2,6 @@
+ #include <linux/types.h>
+ #include <linux/atmmpc.h>
+ #include <linux/slab.h>
+-#include <linux/time.h>
+ 
+ #include "mpoa_caches.h"
+ #include "mpc.h"
+-- 
+2.25.1
+

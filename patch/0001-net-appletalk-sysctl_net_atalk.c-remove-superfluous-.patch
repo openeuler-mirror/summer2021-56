@@ -1,0 +1,28 @@
+From 7892e2fd5b2ab4064fde3feec1b089678eb2945e Mon Sep 17 00:00:00 2001
+From: Mianhan Liu <liumh1@shanghaitech.edu.cn>
+Date: Thu, 30 Sep 2021 22:59:49 +0800
+Subject: [PATCH] net/appletalk/sysctl_net_atalk.c: remove superfluous headers
+
+sysctl_net_atalk.c hasn't use any macro or function declared in linux/sysctl.h and net/sock.h.
+Thus, these files can be removed from sysctl_net_atalk.c safely without
+affecting the compilation of the ./net module
+---
+ net/appletalk/sysctl_net_atalk.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/net/appletalk/sysctl_net_atalk.c b/net/appletalk/sysctl_net_atalk.c
+index d945b7c01..68e82990b 100644
+--- a/net/appletalk/sysctl_net_atalk.c
++++ b/net/appletalk/sysctl_net_atalk.c
+@@ -7,8 +7,6 @@
+  * Dynamic registration, added aarp entries. (5/30/97 Chris Horn)
+  */
+ 
+-#include <linux/sysctl.h>
+-#include <net/sock.h>
+ #include <linux/atalk.h>
+ 
+ static struct ctl_table atalk_table[] = {
+-- 
+2.25.1
+

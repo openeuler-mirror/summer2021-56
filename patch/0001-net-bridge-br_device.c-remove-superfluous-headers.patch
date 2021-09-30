@@ -1,0 +1,27 @@
+From fe6cb2300fd11bb1cdcbbb05599d6be3dac1e1a7 Mon Sep 17 00:00:00 2001
+From: Mianhan Liu <liumh1@shanghaitech.edu.cn>
+Date: Thu, 30 Sep 2021 23:14:43 +0800
+Subject: [PATCH] net/bridge/br_device.c: remove superfluous headers
+
+br_device.c hasn't use any macro or function declared in linux/uaccess.h.
+Thus, these files can be removed from br_device.c safely without
+affecting the compilation of the ./net module
+---
+ net/bridge/br_device.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/net/bridge/br_device.c b/net/bridge/br_device.c
+index 8d6bab244..da89164ae 100644
+--- a/net/bridge/br_device.c
++++ b/net/bridge/br_device.c
+@@ -15,7 +15,6 @@
+ #include <linux/list.h>
+ #include <linux/netfilter_bridge.h>
+ 
+-#include <linux/uaccess.h>
+ #include "br_private.h"
+ 
+ #define COMMON_FEATURES (NETIF_F_SG | NETIF_F_FRAGLIST | NETIF_F_HIGHDMA | \
+-- 
+2.25.1
+

@@ -1,0 +1,27 @@
+From 9c9b0cfe9effdda2481f6b1b7a4ba1f777834d45 Mon Sep 17 00:00:00 2001
+From: Mianhan Liu <liumh1@shanghaitech.edu.cn>
+Date: Thu, 30 Sep 2021 23:20:38 +0800
+Subject: [PATCH] net/bridge/br_stp_timer.c: remove superfluous headers
+
+br_stp_timer.c hasn't use any macro or function declared in linux/times.h.
+Thus, these files can be removed from br_stp_timer.c safely without
+affecting the compilation of the ./net module
+---
+ net/bridge/br_stp_timer.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/net/bridge/br_stp_timer.c b/net/bridge/br_stp_timer.c
+index 27bf1979b..37ec16b2e 100644
+--- a/net/bridge/br_stp_timer.c
++++ b/net/bridge/br_stp_timer.c
+@@ -8,7 +8,6 @@
+  */
+ 
+ #include <linux/kernel.h>
+-#include <linux/times.h>
+ 
+ #include "br_private.h"
+ #include "br_private_stp.h"
+-- 
+2.25.1
+

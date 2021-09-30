@@ -1,0 +1,30 @@
+From c0efe151f1930b8a4c53a17c9bff734c5d62e59b Mon Sep 17 00:00:00 2001
+From: Mianhan Liu <liumh1@shanghaitech.edu.cn>
+Date: Thu, 30 Sep 2021 22:50:58 +0800
+Subject: [PATCH] net/802/psnap.c: remove superfluous headers
+
+psnap.c hasn't use any macro or function declared in linux/in.h, linux/mm.h and linux/rculist.h.
+Thus, these files can be removed from psnap.c safely without
+affecting the compilation of the ./net module
+---
+ net/802/psnap.c | 3 ---
+ 1 file changed, 3 deletions(-)
+
+diff --git a/net/802/psnap.c b/net/802/psnap.c
+index 4492e8d7a..88a7ecd87 100644
+--- a/net/802/psnap.c
++++ b/net/802/psnap.c
+@@ -14,10 +14,7 @@
+ #include <net/datalink.h>
+ #include <net/llc.h>
+ #include <net/psnap.h>
+-#include <linux/mm.h>
+-#include <linux/in.h>
+ #include <linux/init.h>
+-#include <linux/rculist.h>
+ 
+ static LIST_HEAD(snap_list);
+ static DEFINE_SPINLOCK(snap_lock);
+-- 
+2.25.1
+

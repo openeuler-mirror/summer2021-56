@@ -1,0 +1,27 @@
+From 004900ed09232d9e2db7f452041b4c7b5f412ec8 Mon Sep 17 00:00:00 2001
+From: Mianhan Liu <liumh1@shanghaitech.edu.cn>
+Date: Thu, 30 Sep 2021 22:53:21 +0800
+Subject: [PATCH] net/8021q/vlan_netlink.c: remove superfluous headers
+
+vlan_netlink.c hasn't use any macro or function declared in net/net_namespace.h.
+Thus, these files can be removed from vlan_netlink.c safely without
+affecting the compilation of the ./net module
+---
+ net/8021q/vlan_netlink.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/net/8021q/vlan_netlink.c b/net/8021q/vlan_netlink.c
+index 0db85aeb1..9d5d3e3f9 100644
+--- a/net/8021q/vlan_netlink.c
++++ b/net/8021q/vlan_netlink.c
+@@ -9,7 +9,6 @@
+ #include <linux/netdevice.h>
+ #include <linux/if_vlan.h>
+ #include <linux/module.h>
+-#include <net/net_namespace.h>
+ #include <net/netlink.h>
+ #include <net/rtnetlink.h>
+ #include "vlan.h"
+-- 
+2.25.1
+

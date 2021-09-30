@@ -1,0 +1,30 @@
+From 78e391295a976a424d44cb57d28b7dec9aca15ff Mon Sep 17 00:00:00 2001
+From: Mianhan Liu <liumh1@shanghaitech.edu.cn>
+Date: Thu, 30 Sep 2021 23:02:26 +0800
+Subject: [PATCH] net/atm/pvc.c: remove superfluous headers
+
+pvc.c hasn't use any macro or function declared in linux/bitops.h,
+linux/export.h and linux/skbuff.h.
+Thus, these files can be removed from pvc.c safely without
+affecting the compilation of the ./net module
+---
+ net/atm/pvc.c | 3 ---
+ 1 file changed, 3 deletions(-)
+
+diff --git a/net/atm/pvc.c b/net/atm/pvc.c
+index 53e7d3f39..5cb686cf0 100644
+--- a/net/atm/pvc.c
++++ b/net/atm/pvc.c
+@@ -10,9 +10,6 @@
+ #include <linux/errno.h>	/* error codes */
+ #include <linux/kernel.h>	/* printk */
+ #include <linux/init.h>
+-#include <linux/skbuff.h>
+-#include <linux/bitops.h>
+-#include <linux/export.h>
+ #include <net/sock.h>		/* for sock_no_* */
+ 
+ #include "resources.h"		/* devs and vccs */
+-- 
+2.25.1
+

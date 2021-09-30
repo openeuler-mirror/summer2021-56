@@ -1,0 +1,27 @@
+From 81b9ca35230c5bfe14f59dd8f9c503cbcfde7e75 Mon Sep 17 00:00:00 2001
+From: Mianhan Liu <liumh1@shanghaitech.edu.cn>
+Date: Thu, 30 Sep 2021 22:59:18 +0800
+Subject: [PATCH] net/appletalk/dev.c: remove superfluous headers
+
+dev.c hasn't use any macro or function declared in linux/netdevice.h.
+Thus, these files can be removed from dev.c safely without
+affecting the compilation of the ./net module
+---
+ net/appletalk/dev.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/net/appletalk/dev.c b/net/appletalk/dev.c
+index 284c8e585..dc6b9fcab 100644
+--- a/net/appletalk/dev.c
++++ b/net/appletalk/dev.c
+@@ -6,7 +6,6 @@
+ 
+ #include <linux/errno.h>
+ #include <linux/module.h>
+-#include <linux/netdevice.h>
+ #include <linux/if_arp.h>
+ #include <linux/if_ltalk.h>
+ 
+-- 
+2.25.1
+

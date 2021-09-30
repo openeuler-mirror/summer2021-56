@@ -1,0 +1,31 @@
+From da810f56692a2648cad2f81077229765d1320ccd Mon Sep 17 00:00:00 2001
+From: Mianhan Liu <liumh1@shanghaitech.edu.cn>
+Date: Thu, 30 Sep 2021 22:58:06 +0800
+Subject: [PATCH] net/appletalk/atalk_proc.c: remove superfluous headers
+
+atalk_proc.c hasn't use any macro or function declared in linux/export.h,
+net/net_namespace.h and net/sock.h.
+Thus, these files can be removed from atalk_proc.c safely without
+affecting the compilation of the ./net module
+---
+ net/appletalk/atalk_proc.c | 3 ---
+ 1 file changed, 3 deletions(-)
+
+diff --git a/net/appletalk/atalk_proc.c b/net/appletalk/atalk_proc.c
+index 9c1241292..ef0341317 100644
+--- a/net/appletalk/atalk_proc.c
++++ b/net/appletalk/atalk_proc.c
+@@ -8,10 +8,7 @@
+ #include <linux/init.h>
+ #include <linux/proc_fs.h>
+ #include <linux/seq_file.h>
+-#include <net/net_namespace.h>
+-#include <net/sock.h>
+ #include <linux/atalk.h>
+-#include <linux/export.h>
+ 
+ 
+ static __inline__ struct atalk_iface *atalk_get_interface_idx(loff_t pos)
+-- 
+2.25.1
+

@@ -1,0 +1,31 @@
+From 8abb10452e74a04893182f7d0d918acc967dbb15 Mon Sep 17 00:00:00 2001
+From: Mianhan Liu <liumh1@shanghaitech.edu.cn>
+Date: Thu, 30 Sep 2021 23:03:44 +0800
+Subject: [PATCH] net/ax25/sysctl_net_ax25.c: remove superfluous headers
+
+sysctl_net_ax25.c hasn't use any macro or function declared in linux/mm.h,
+linux/spinlock.h and linux/sysctl.h.
+Thus, these files can be removed from sysctl_net_ax25.c safely without
+affecting the compilation of the ./net module
+---
+ net/ax25/sysctl_net_ax25.c | 3 ---
+ 1 file changed, 3 deletions(-)
+
+diff --git a/net/ax25/sysctl_net_ax25.c b/net/ax25/sysctl_net_ax25.c
+index 2154d004d..d950c2e7e 100644
+--- a/net/ax25/sysctl_net_ax25.c
++++ b/net/ax25/sysctl_net_ax25.c
+@@ -3,10 +3,7 @@
+  *
+  * Copyright (C) 1996 Mike Shaver (shaver@zeroknowledge.com)
+  */
+-#include <linux/mm.h>
+ #include <linux/slab.h>
+-#include <linux/sysctl.h>
+-#include <linux/spinlock.h>
+ #include <net/ax25.h>
+ 
+ static int min_ipdefmode[1],    	max_ipdefmode[] = {1};
+-- 
+2.25.1
+
